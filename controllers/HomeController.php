@@ -12,6 +12,7 @@ use app\models\_forms\ContactForm;
 use app\models\_forms\RegisterForm;
 use app\models\Product;
 use app\models\Role;
+use app\models\Order;
 
 class HomeController extends Controller
 {
@@ -108,9 +109,7 @@ class HomeController extends Controller
             return $this->redirect(['index']);
         }
 
-        Product::destroySessionProducts();
-        Yii::$app->cart->checkOut(false);
-        return $this->redirect(['index']);
+        return $this->redirect(['payment']);
     }
 
     /**

@@ -27,7 +27,8 @@ $itemLabel = '';
 if ($isUser) {
     $items = [
         $home,
-        ['label' => Yii::t('app', 'Transactions'), 'url' => ['/home/order']]
+        ['label' => Yii::t('app', 'Transactions'), 'url' => ['/home/order']],
+        ['label' => Yii::t('app', 'Cart'), 'url' => ['/payment/index']]
     ];
     $items[] = '<li>'
         . Html::beginForm(['/home/logout'], 'post')

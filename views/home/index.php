@@ -11,7 +11,7 @@ $currency = Currency::getCurrencyTypeLabel(Currency::CURRENCY_IDR);
 <div class="site-index">
     <div class="body-content">
         <?php if (Yii::$app->getSession()->getFlash('orderFailed')):?>
-            <div class="alert alert-success fade in">
+            <div class="alert alert-danger fade in">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                 <h4 class="semibold"><?= Yii::t('app', 'Checkout Failed')?></h4>
                 <p class="mb10"><?= Yii::t('app', 'You have to login first, before checkout') ?></p>
@@ -24,11 +24,11 @@ $currency = Currency::getCurrencyTypeLabel(Currency::CURRENCY_IDR);
             <div class="row">
                 <?php foreach($orderedItems as $item): ?>
                 <ul class="row">
-                    <li><?= $item->name ?> = <?= $item->getQuantity() ?></li>
+                    <li><?= $item->name ?> = <?= $item->getQuantity() ?> piece(s) (@ <?= $item->cost ?>)</li>
                 </ul>
                 <?php endforeach; ?>
                 <p>Total you must paid = <?= Yii::$app->formatter->asCurrency($total , $currency); ?></p>
-                <?= Html::a(Yii::t('app', 'Check Out'), "/home/checkout", ['class' => 'btn order btn-default']);?>
+                <?= Html::a(Yii::t('app', 'Check Out'), "/payment/index", ['class' => 'btn order btn-default']);?>
             </div>
         <?php endif; ?>
 
