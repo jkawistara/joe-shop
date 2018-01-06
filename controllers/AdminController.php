@@ -1,4 +1,8 @@
 <?php
+/**
+ * AdminController class file.
+ * @author Jauhari Khairul Kawistara <jkawistara@gmail.com>
+ */
 
 namespace app\controllers;
 
@@ -9,9 +13,10 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\_forms\LoginForm;
 use app\models\_forms\ContactForm;
-use app\models\_forms\RegisterForm;
+use app\models\_helpers\AdminHelper;
+use app\models\Role;
 
-class HomeController extends Controller
+class AdminController extends Controller
 {
     /**
      * @inheritdoc
@@ -56,55 +61,46 @@ class HomeController extends Controller
     }
 
     /**
-     * Displays homepage.
-     *
      * @return string
      */
     public function actionIndex()
     {
-        return $this->render('index');
-    }
-
-    /**
-     * Login action.
-     *
-     * @return Response|string
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->render('index');
+        if (AdminHelper::isAdmin()) {
+            return $this->render('panel', ['model' => $model]);
         }
 
-        $model->password = '';
+        if (Role::isUser()){
+            return $this->render('@app/views/home/index', [
+                'model' => $model,
+            ]);
+        }
+
         return $this->render('login', [
             'model' => $model,
         ]);
     }
 
     /**
-     * @return string|Response
+     * @return Response|string
      */
-    public function actionRegister()
+    public function actionLogin()
     {
-        $model = new RegisterForm();
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+        $model = new LoginForm();
+        if (Role::isUser()){
+            return $this->render('@app/views/home/index', [
+                'model' => $model,
+            ]);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->saveData()) {
-            return $this->goHome();
+        if ($model->load(Yii::$app->request->post()) && $model->login(true)) {
+            return $this->render('panel', [
+                'model' => $model,
+            ]);
         }
 
         $model->password = '';
-        return $this->render('register', [
-            'model' => $model
-        ]);
+        return $this->render('login', ['model' => $model]);
     }
 
     /**
@@ -118,5 +114,4 @@ class HomeController extends Controller
 
         return $this->goHome();
     }
-
 }

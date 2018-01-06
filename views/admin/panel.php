@@ -6,7 +6,7 @@ use yii\bootstrap\Nav;
 
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+$this->title = 'Panel Admin';
 ?>
 
 <div class="site-index">
