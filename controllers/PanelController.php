@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\models\Transaction;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -19,7 +18,7 @@ use app\models\Order;
 use app\models\Product;
 use yii\web\UploadedFile;
 
-class TransactionController extends Controller
+class PanelController extends Controller
 {
     /**
      * @inheritdoc
@@ -70,9 +69,9 @@ class TransactionController extends Controller
      */
     public function actionIndex()
     {
-        $transactionIds = TransactionDetail::getTransactionsIds();
         $dataProvider = new ActiveDataProvider([
-            'query' => TransactionDetail::find()->hasTransactionIds($transactionIds)
+            'query' => TransactionDetail::find()
+                ->hasPaymentReceipt()
                 ->orderByNewestId()
         ]);
         return $this->render('index', [
@@ -84,7 +83,7 @@ class TransactionController extends Controller
     {
         $model = TransactionDetail::findById($id);
 
-        if ($model->load(Yii::$app->getRequest()->post()) && $model->uploadTransactionProof($id)) {
+        if ($model->load(Yii::$app->getRequest()->post()) && $model->save(false)) {
             return $this->redirect('index');
         }
 

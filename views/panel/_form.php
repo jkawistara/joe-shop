@@ -15,7 +15,9 @@ use yii\helpers\Html;
     $formId = $form->id;
     ?>
     <?= $form->field($model, 'id')->textInput(['readOnly' => true]) ?>
-    <?= $form->field($model, 'paymentReceipt')->fileInput(); ?>
+    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'shippingId')->textInput() ?>
+    <?= $form->field($model, 'courierId')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton( Yii::t('App', 'Update'), ['class' => 'btn btn-primary']) ?>

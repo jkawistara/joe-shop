@@ -42,8 +42,7 @@ if ($isUser) {
 
 if ($isAdmin) {
     $items = [
-        $home,
-        ['label' => Yii::t('app', 'User Transactions'), 'url' => ['/panel/order']]
+        ['label' => Yii::t('app', 'User Transactions'), 'url' => ['/panel/index']]
     ];
     $items[] = '<li>'
         . Html::beginForm(['/admin/logout'], 'post')

@@ -65,6 +65,10 @@ class HomeController extends Controller
      */
     public function actionIndex()
     {
+        if (Role::isAdmin()){
+            return $this->redirect('/panel/index');
+        }
+
         $cart = Yii::$app->cart;
         $orderedItems = $cart->getItems();
         $total = $cart->getCost();

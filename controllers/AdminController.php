@@ -76,9 +76,7 @@ class AdminController extends Controller
             ]);
         }
 
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return $this->redirect('login');
     }
 
     /**
@@ -94,9 +92,7 @@ class AdminController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->login(true)) {
-            return $this->render('panel', [
-                'model' => $model,
-            ]);
+            return $this->redirect('/panel/index');
         }
 
         $model->password = '';
