@@ -64,6 +64,16 @@ $config = [
                 ],
             ],
         ],
+        's3' => [
+            'class' => 'frostealth\yii2\aws\s3\Service',
+            'credentials' => [
+                'key' => 'AKIAJIYOVC5MXEJZGBXQ',
+                'secret' => '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',
+            ],
+            'region' => 'ap-southeast-1',
+            'defaultBucket' => 'jojoshoping',
+            'defaultAcl' => 'public-read',
+        ],
         'cart' => [
             'class' => 'hscstudio\cart\Cart',
         ],
