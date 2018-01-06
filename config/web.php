@@ -64,6 +64,9 @@ $config = [
                 ],
             ],
         ],
+        'cart' => [
+            'class' => 'hscstudio\cart\Cart',
+        ],
     ],
     'params' => $params,
 ];

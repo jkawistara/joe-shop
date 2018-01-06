@@ -10,6 +10,8 @@ use yii\filters\VerbFilter;
 use app\models\_forms\LoginForm;
 use app\models\_forms\ContactForm;
 use app\models\_forms\RegisterForm;
+use app\models\Product;
+use app\models\Role;
 
 class HomeController extends Controller
 {
@@ -62,7 +64,53 @@ class HomeController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $cart = Yii::$app->cart;
+        $orderedItems = $cart->getItems();
+        $total = $cart->getCost();
+        $products = Product::findProducts();
+        return $this->render('index', [
+            'products' => $products,
+            'orderedItems' => $orderedItems,
+            'total' => $total
+        ]);
+    }
+
+    public function actionOrder($id)
+    {
+        $product = Product::findOne($id);
+        if ($product) {
+            $_qty = Yii::$app->session->get("product-{$id}");
+            Yii::$app->session->set("product-{$id}", $_qty - 1);
+            Yii::$app->cart->create($product);
+            return $this->redirect(['index']);
+        }
+    }
+
+    /**
+     * @return Response
+     */
+    public function actionUpdate(int $id, int $quantity)
+    {
+        $product = Product::findOne($id);
+        if ($product) {
+            Yii::$app->cart->update($product, $quantity);
+            return $this->redirect(['index']);
+        }
+    }
+
+    /**
+     * @return bool|Response
+     */
+    public function actionCheckout()
+    {
+        if(!Role::isUser()){
+            Yii::$app->session->setFlash('orderFailed');
+            return $this->redirect(['index']);
+        }
+
+        Product::destroySessionProducts();
+        Yii::$app->cart->checkOut(false);
+        return $this->redirect(['index']);
     }
 
     /**
@@ -78,7 +126,7 @@ class HomeController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->render('index');
+            return $this->redirect(['index']);
         }
 
         $model->password = '';
