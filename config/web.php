@@ -67,8 +67,8 @@ $config = [
         's3' => [
             'class' => 'frostealth\yii2\aws\s3\Service',
             'credentials' => [
-                'key' => 'AKIAJIYOVC5MXEJZGBXQ',
-                'secret' => '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',
+                'key' => 'AKIAIONKTI3IF6MCJ2KQ',
+                'secret' => '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',
             ],
             'region' => 'ap-southeast-1',
             'defaultBucket' => 'jojoshoping',

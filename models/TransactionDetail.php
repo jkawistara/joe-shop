@@ -9,6 +9,7 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use app\models\_queries\TransactionDetailQuery;
+use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
 /**
@@ -36,7 +37,6 @@ class TransactionDetail extends ActiveRecord
 
     const STATUS_CANCEL = 3;
 
-
     /**
      * @inheritdoc
      */
@@ -52,7 +52,7 @@ class TransactionDetail extends ActiveRecord
     {
         return [
             [[
-                'bankId', 'couponId', 'status', 'totalPrice', 'totalPayment', 'transactionDate'
+                'bankId', 'status', 'totalPrice', 'totalPayment', 'transactionDate'
             ], 'required'],
             [[
                 'couponId', 'paymentDate', 'paymentReceipt', 'shippingId', 'courierId'
@@ -79,6 +79,85 @@ class TransactionDetail extends ActiveRecord
     public static function find(): TransactionDetailQuery
     {
         return new TransactionDetailQuery(self::class);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getCouponIdLabel()
+    {
+        if (empty($this->couponId)) {
+            return null;
+        }
+
+        return Coupon::find()
+            ->select('couponCode')
+            ->filterById($this->couponId)
+            ->scalar();
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBankIdLabel()
+    {
+        if (empty($this->bankId)) {
+            return null;
+        }
+
+        return Bank::find()
+            ->select('accountName')
+            ->filterById($this->bankId)
+            ->scalar();
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getCourierLabel()
+    {
+        if (empty($this->courierId)) {
+            return null;
+        }
+
+        return Courier::find()
+            ->select('name')
+            ->filterById($this->courierId)
+            ->scalar();
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getCourierLabels(): array
+    {
+        $couriers = [];
+        array_map(function($courier) use (&$couriers) {
+            $couriers[$courier->id] = $courier->name;
+        }, Courier::findAllCourier()) ;
+
+        return $couriers;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getArrayStatusLabels(): array
+    {
+        return [
+            self::STATUS_NOT_PAID => 'Not Paid',
+            self::STATUS_PAID => 'Paid',
+            self::STATUS_REFUNDED => 'Refunded',
+            self::STATUS_CANCEL => 'Cancelled'
+        ];
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getStatusLabel()
+    {
+        return self::getArrayStatusLabels()[$this->status];
     }
 
     /**
@@ -109,6 +188,7 @@ class TransactionDetail extends ActiveRecord
         $transaction->totalPayment = !empty($detail->totalPayment) ? $detail->totalPayment : $detail->totalPrice;
         $transaction->transactionDate = $detail->transactionDate;
         $transaction->save();
+
         Yii::$app->session->remove('payment');
         return $transaction->id;
     }

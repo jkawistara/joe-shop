@@ -5,12 +5,14 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\common\constants\CurrencyConstants as Currency;
 
 /* @var $this         \yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'List Transactions');
 $this->params['breadcrumbs'][] = $this->title;
+$currency = Currency::getCurrencyTypeLabel(Currency::CURRENCY_IDR);
 ?>
 <div class="card-box">
     <div>
@@ -23,11 +25,51 @@ $this->params['breadcrumbs'][] = $this->title;
             'dataProvider' => $dataProvider,
             'columns' => [
                 'id',
-                'couponId',
-                'bankId',
-                'status',
-                'totalPrice',
-                'totalPayment',
+                [
+                    'attribute' => 'couponId',
+                    'format' => 'html',
+                    'value' => function ($data) {
+                        $value = $data->getCouponIdLabel();
+                        if (empty($value)) {
+                            return 'N/A';
+                        }
+                        return $value;
+                    },
+                ],
+                [
+                    'attribute' => 'bankId',
+                    'format' => 'html',
+                    'value' => function ($data) {
+                        $value = $data->getBankIdLabel();
+                        if (empty($value)) {
+                            return 'N/A';
+                        }
+                        return $value;
+                    },
+                ],
+                [
+                    'attribute' => 'status',
+                    'format' => 'html',
+                    'value' => function ($data) {
+                        $value = $data->getStatusLabel();
+                        if (empty($value)) {
+                            return 'N/A';
+                        }
+                        return $value;
+                    },
+                ],
+                [
+                    'attribute' => 'totalPrice',
+                    'content' => function ($data) use ($currency) {
+                        return Yii::$app->formatter->asCurrency($data->totalPrice, $currency);
+                    }
+                ],
+                [
+                    'attribute' => 'totalPayment',
+                    'content' => function ($data) use ($currency) {
+                        return Yii::$app->formatter->asCurrency($data->totalPayment, $currency);
+                    }
+                ],
                 'transactionDate',
                 [
                     'attribute' => 'paymentReceipt',
@@ -39,11 +81,30 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                 ],
                 'paymentDate',
-                'shippingId',
-                'courierId',
+                [
+                    'attribute' => 'shippingId',
+                    'format' => 'html',
+                    'value' => function ($data) {
+                        if (empty($data->shippingId)) {
+                            return 'N/A';
+                        }
+                        return $data->shippingId;
+                    },
+                ],
+                [
+                    'attribute' => 'courierId',
+                    'format' => 'html',
+                    'value' => function ($data) {
+                        $value = $data->getCourierLabel();
+                        if (empty($value)) {
+                            return 'N/A';
+                        }
+                        return $value;
+                    },
+                ],
                 [
                     'class' => \yii\grid\ActionColumn::class,
-                    'template' => '{documents} {update} {view}',
+                    'template' => '{update}',
                     'buttons' => [
                         'update' => function ($url, $model, $key) {
                             $model; //unused

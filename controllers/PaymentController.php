@@ -78,7 +78,7 @@ class PaymentController extends Controller
         if(empty($orderedItems)) {
             return $this->redirect('/home/index');
         }
-
+        $coupons = [];
         $detail = new TransactionDetail();
         $model = new PaymentForm();
         $bank = Bank::findByAccountNumber(Bank::DEFAULT_ACCOUNT_NUMBER);
@@ -93,6 +93,7 @@ class PaymentController extends Controller
                 if($model->isCouponActive()) {
                     $coupon = Coupon::findByCouponCode($model->couponCode);
                     $detail->couponId = $coupon->id;
+                    $coupons[$coupon->type] = $coupon->value;
                     $detail->calculatePayment($coupon);
                 } else {
                     return $this->redirect('index');
@@ -106,7 +107,8 @@ class PaymentController extends Controller
             'total' => $total,
             'model' => $model,
             'detail' => $detail,
-            'bank' => $bank
+            'bank' => $bank,
+            'coupons' => $coupons
         ]);
     }
 

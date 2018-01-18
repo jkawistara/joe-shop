@@ -26,7 +26,7 @@ class CouponQuery extends ActiveQuery
         return $this->andWhere(['>=', 'quantity', $number]);
     }
 
-    public function filterByCouponCode(int $code): CouponQuery
+    public function filterByCouponCode(string $code): CouponQuery
     {
         return $this->andWhere(['couponCode' => $code]);
     }

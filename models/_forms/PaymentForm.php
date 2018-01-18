@@ -40,7 +40,7 @@ class PaymentForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'couponCode' => Yii::t('common/labels', 'Coupon :'),
+            'couponCode' => Yii::t('common/labels', 'Coupon'),
         ];
     }
 

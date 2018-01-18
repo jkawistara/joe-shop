@@ -75,6 +75,4 @@ class Transaction extends ActiveRecord
         $transaction->orderId = $orderId;
         $transaction->save();
     }
-
-
 }

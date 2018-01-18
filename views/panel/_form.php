@@ -4,6 +4,7 @@
  */
 
 use yii\helpers\Html;
+use app\models\TransactionDetail as Detail;
 
 /* @var $this yii\web\View */
 ?>
@@ -15,10 +16,11 @@ use yii\helpers\Html;
     $formId = $form->id;
     ?>
     <?= $form->field($model, 'id')->textInput(['readOnly' => true]) ?>
-    <?= $form->field($model, 'status')->textInput() ?>
-    <?= $form->field($model, 'shippingId')->textInput() ?>
-    <?= $form->field($model, 'courierId')->textInput() ?>
-
+    <?= $form->field($model, 'status')->dropdownList(Detail::getArrayStatusLabels()); ?>
+    <?= $form->field($model, 'shippingId')->textInput(['placeholder' => "Input shipping Id if it is available"]) ?>
+    <?= $form->field($model, 'courierId')->dropdownList(Detail::getCourierLabels(),
+        ['prompt'=> Yii::t('App', 'Select Couriers')]
+    ); ?>
     <div class="form-group">
         <?= Html::submitButton( Yii::t('App', 'Update'), ['class' => 'btn btn-primary']) ?>
     </div>
